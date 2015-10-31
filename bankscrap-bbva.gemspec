@@ -5,7 +5,7 @@ require 'bankscrap-bbva/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "bankscrap-bbva"
-  spec.version       = Bankscrap::Bbva::VERSION
+  spec.version       = BankScrap::Bbva::VERSION
   spec.authors       = ['Javier Cuevas']
   spec.email         = ["javier@diacode.com"]
   spec.summary       = %q{BBVA adapter for BankScrap}
