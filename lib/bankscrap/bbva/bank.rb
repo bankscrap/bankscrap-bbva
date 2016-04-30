@@ -3,12 +3,12 @@ require 'bankscrap'
 module Bankscrap
   module BBVA
     class Bank < ::Bankscrap::Bank
-      BASE_ENDPOINT     = 'https://servicios.bbva.es'
-      LOGIN_ENDPOINT    = '/DFAUTH/slod/DFServletXML'
-      PRODUCTS_ENDPOINT = '/ENPP/enpp_mult_web_mobility_02/products/v1'
-      ACCOUNT_ENDPOINT  = '/ENPP/enpp_mult_web_mobility_02/accounts/'
+      BASE_ENDPOINT     = 'https://servicios.bbva.es'.freeze
+      LOGIN_ENDPOINT    = '/DFAUTH/slod/DFServletXML'.freeze
+      PRODUCTS_ENDPOINT = '/ENPP/enpp_mult_web_mobility_02/products/v1'.freeze
+      ACCOUNT_ENDPOINT  = '/ENPP/enpp_mult_web_mobility_02/accounts/'.freeze
       # BBVA expects an identifier before the actual User Agent, but 12345 works fine
-      USER_AGENT        = '12345;Android;LGE;Nexus 5;1080x1776;Android;5.1.1;BMES;4.4;xxhd'
+      USER_AGENT        = '12345;Android;LGE;Nexus 5;1080x1776;Android;5.1.1;BMES;4.4;xxhd'.freeze
 
       def initialize(user, password, log: false, debug: false, extra_args: nil)
         @user = format_user(user.dup)
@@ -65,11 +65,11 @@ module Bankscrap
           'BBVA-Method' => 'GET'
         }
 
-        # The API accepts a toDate param that we could pass the end_date argument,
+        # The API accepts a toDate param that we could pass the end_date argument,
         # however when we pass the toDate param, the API stops returning the account balance.
-        # Therefore we need to take a workaround: only filter with fromDate and loop
-        # over all the available pages, filtering out the movements that doesn't match
-        # the end_date argument.
+        # Therefore we need to take a workaround: only filter with fromDate and loop
+        # over all the available pages, filtering out the movements that doesn't match
+        # the end_date argument.
         url = BASE_ENDPOINT +
               ACCOUNT_ENDPOINT +
               account.id +
@@ -113,7 +113,7 @@ module Bankscrap
       def format_user(user)
         user.upcase!
 
-        if user.match(/^[0-9]{8}[A-Z]$/)
+        if user =~ /^[0-9]{8}[A-Z]$/
           # It's a DNI
           "0019-0#{user}"
         else
