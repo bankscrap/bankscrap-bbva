@@ -17,7 +17,7 @@ module Bankscrap
         @debug = debug
 
         initialize_connection
-  ``
+
         add_headers(
           'User-Agent'       => USER_AGENT,
           'BBVA-User-Agent'  => USER_AGENT,
