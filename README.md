@@ -1,6 +1,7 @@
-# Bankscrap::Bbva
+# Bankscrap::BBVA
 
-TODO: Write a gem description
+Bankscrap adapter for the API behind BBVA's [mobile app](https://play.google.com/store/apps/developer?id=BBVA&hl=en).
+This adapter is only valid for personal accounts (the ones that work with that mobile APP), not for company accounts.
 
 ## Installation
 
@@ -20,7 +21,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+For usage instructions please read [Bankscrap readme](https://github.com/bankscrap/bankscrap/blob/refactor/README.md#usage).
+
 
 ## Contributing
 

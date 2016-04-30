@@ -1,7 +1,7 @@
 require 'bankscrap'
 
 module Bankscrap
-  class Bbva < Bank
+  class BBVA < Bank
     BASE_ENDPOINT     = 'https://servicios.bbva.es'
     LOGIN_ENDPOINT    = '/DFAUTH/slod/DFServletXML'
     PRODUCTS_ENDPOINT = '/ENPP/enpp_mult_web_mobility_02/products/v1'
@@ -34,7 +34,7 @@ module Bankscrap
     end
 
     # Fetch all the accounts for the given user
-    # Returns an array of BankScrap::Account objects
+    # Returns an array of Bankscrap::Account objects
     def fetch_accounts
       log 'fetch_accounts'
 
@@ -53,8 +53,8 @@ module Bankscrap
     # By default it fetches transactions for the last month,
     # The maximum allowed by the BBVA API is the last 3 years.
     #
-    # Account should be a BankScrap::Account object
-    # Returns an array of BankScrap::Transaction objects
+    # Account should be a Bankscrap::Account object
+    # Returns an array of Bankscrap::Transaction objects
     def fetch_transactions_for(account, start_date: Date.today - 1.month, end_date: Date.today)
       from_date = start_date.strftime('%Y-%m-%d')
 
