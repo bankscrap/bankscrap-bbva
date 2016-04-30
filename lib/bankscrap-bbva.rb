@@ -1,2 +1,2 @@
-require_relative 'bankscrap-bbva/bbva'
-require_relative 'bankscrap-bbva/version'
+require_relative 'bankscrap/bbva/bank'
+require_relative 'bankscrap/bbva/version'
