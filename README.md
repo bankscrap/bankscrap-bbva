@@ -1,6 +1,6 @@
 # Bankscrap::BBVA
 
-Bankscrap adapter for the API behind BBVA's [mobile app](https://play.google.com/store/apps/developer?id=BBVA&hl=en).
+Bankscrap adapter for the API behind BBVA's [mobile app](https://play.google.com/store/apps/details?id=com.bbva.bbvacontigo&hl=en).
 This adapter is only valid for personal accounts (the ones that work with that mobile APP), not for company accounts.
 
 ## Installation
