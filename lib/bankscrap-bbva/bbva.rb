@@ -1,6 +1,6 @@
-require 'json'
+require 'bankscrap'
 
-module BankScrap
+module Bankscrap
   class Bbva < Bank
     BASE_ENDPOINT     = 'https://servicios.bbva.es'
     LOGIN_ENDPOINT    = '/DFAUTH/slod/DFServletXML'
