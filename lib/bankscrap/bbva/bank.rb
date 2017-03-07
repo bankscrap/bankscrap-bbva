@@ -5,33 +5,33 @@ module Bankscrap
     class Bank < ::Bankscrap::Bank
       BASE_ENDPOINT     = 'https://servicios.bbva.es'.freeze
       LOGIN_ENDPOINT    = '/DFAUTH/slod/DFServletXML'.freeze
-      PRODUCTS_ENDPOINT = '/ENPP/enpp_mult_web_mobility_02/products/v1'.freeze
+      SESSIONS_ENDPOINT = '/ENPP/enpp_mult_web_mobility_02/sessions/v1'.freeze
+      PRODUCTS_ENDPOINT = '/ENPP/enpp_mult_web_mobility_02/products/v2'.freeze
       ACCOUNT_ENDPOINT  = '/ENPP/enpp_mult_web_mobility_02/accounts/'.freeze
+
       # BBVA expects an identifier before the actual User Agent, but 12345 works fine
-      USER_AGENT        = '12345;Android;LGE;Nexus 5;1080x1776;Android;5.1.1;BMES;4.4;xxhd'.freeze
+      USER_AGENT        = SecureRandom.hex(64).upcase + ';iPhone;Apple;iPhone5,2;640x1136;iOS;9.3.2;WOODY;5.1.2;xhdpi'.freeze
+      REQUIRED_CREDENTIALS  = [:user, :password]
+      CONSUMER_ID = '00000013' # this is probably some sort of identifier of Android vs iOS consumer app
 
-      def initialize(user, password, log: false, debug: false, extra_args: nil)
-        @user = format_user(user.dup)
-        @password = password
-        @log = log
-        @debug = debug
+      def initialize(credentials = {})
+        super do
+          @user = format_user(@user.dup)
 
-        initialize_connection
+          Bankscrap.proxy = { host: 'localhost', port: 8888 }
 
-        add_headers(
-          'User-Agent'       => USER_AGENT,
-          'BBVA-User-Agent'  => USER_AGENT,
-          'Accept-Language'  => 'spa',
-          'Content-Language' => 'spa',
-          'Accept'           => 'application/json',
-          'Accept-Charset'   => 'UTF-8',
-          'Connection'       => 'Keep-Alive',
-          'Host'             => 'bancamovil.grupobbva.com',
-          'Cookie2'          => '$Version=1'
-        )
-
-        login
-        super
+          add_headers(
+            'User-Agent'       => USER_AGENT,
+            'BBVA-User-Agent'  => USER_AGENT,
+            'Accept-Language'  => 'spa',
+            'Content-Language' => 'spa',
+            'Accept'           => 'application/json',
+            'Accept-Charset'   => 'UTF-8',
+            'Connection'       => 'Keep-Alive',
+            'Host'             => 'servicios.bbva.es',
+            'ConsumerID'       => CONSUMER_ID,
+          )
+        end
       end
 
       # Fetch all the accounts for the given user
@@ -130,6 +130,19 @@ module Bankscrap
           'eai_password'   => @password
         }
         post(BASE_ENDPOINT + LOGIN_ENDPOINT, fields: params)
+
+        # We also need to initialize a session
+        with_headers({'Content-Type' => 'application/json'}) do
+          post(SESSIONS_ENDPOINT, fields: {
+            consumerID: CONSUMER_ID
+          }.to_json)
+        end
+
+        # We need to extract the "tsec" header from the last response.
+        # As the Bankscrap core library doesn't expose the headers of each response 
+        # we have to use Mechanize's HTTP client "current_page" method.
+        tsec = @http.current_page.response["tsec"]
+        add_headers("tsec" => tsec)
       end
 
       # Build an Account object from API data
@@ -138,9 +151,8 @@ module Bankscrap
           bank: self,
           id: data['id'],
           name: data['name'],
-          available_balance: data['availableBalance'],
-          balance: data['availableBalance'],
-          currency: data['currency'],
+          available_balance: Money.new(data['availableBalance'].to_f * 100, data['currency']),
+          balance: Money.new(data['actualBalance'].to_f * 100, data['currency']),
           iban: data['iban'],
           description: "#{data['typeDescription']} #{data['familyCode']}"
         )
@@ -154,7 +166,6 @@ module Bankscrap
           amount: transaction_amount(data),
           description: data['conceptDescription'] || data['description'],
           effective_date: Date.strptime(data['operationDate'], '%Y-%m-%d'),
-          currency: data['currency'],
           balance: transaction_balance(data)
         )
       end
