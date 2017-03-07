@@ -10,9 +10,11 @@ module Bankscrap
       ACCOUNT_ENDPOINT  = '/ENPP/enpp_mult_web_mobility_02/accounts/'.freeze
 
       # BBVA expects an identifier before the actual User Agent, but 12345 works fine
-      USER_AGENT        = SecureRandom.hex(64).upcase + ';iPhone;Apple;iPhone5,2;640x1136;iOS;9.3.2;WOODY;5.1.2;xhdpi'.freeze
-      REQUIRED_CREDENTIALS  = [:user, :password]
-      CONSUMER_ID = '00000013' # this is probably some sort of identifier of Android vs iOS consumer app
+      USER_AGENT = SecureRandom.hex(64).upcase + ';iPhone;Apple;iPhone5,2;640x1136;iOS;9.3.2;WOODY;5.1.2;xhdpi'.freeze
+      REQUIRED_CREDENTIALS = [:user, :password].freeze
+
+      # This is probably some sort of identifier of Android vs iOS consumer app
+      CONSUMER_ID = '00000013'.freeze
 
       def initialize(credentials = {})
         super do
@@ -29,7 +31,7 @@ module Bankscrap
             'Accept-Charset'   => 'UTF-8',
             'Connection'       => 'Keep-Alive',
             'Host'             => 'servicios.bbva.es',
-            'ConsumerID'       => CONSUMER_ID,
+            'ConsumerID'       => CONSUMER_ID
           )
         end
       end
@@ -132,17 +134,17 @@ module Bankscrap
         post(BASE_ENDPOINT + LOGIN_ENDPOINT, fields: params)
 
         # We also need to initialize a session
-        with_headers({'Content-Type' => 'application/json'}) do
+        with_headers('Content-Type' => 'application/json') do
           post(SESSIONS_ENDPOINT, fields: {
             consumerID: CONSUMER_ID
           }.to_json)
         end
 
         # We need to extract the "tsec" header from the last response.
-        # As the Bankscrap core library doesn't expose the headers of each response 
+        # As the Bankscrap core library doesn't expose the headers of each response
         # we have to use Mechanize's HTTP client "current_page" method.
-        tsec = @http.current_page.response["tsec"]
-        add_headers("tsec" => tsec)
+        tsec = @http.current_page.response['tsec']
+        add_headers('tsec' => tsec)
       end
 
       # Build an Account object from API data
