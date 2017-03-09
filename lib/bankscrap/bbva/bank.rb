@@ -20,8 +20,6 @@ module Bankscrap
         super do
           @user = format_user(@user.dup)
 
-          Bankscrap.proxy = { host: 'localhost', port: 8888 }
-
           add_headers(
             'User-Agent'       => USER_AGENT,
             'BBVA-User-Agent'  => USER_AGENT,
