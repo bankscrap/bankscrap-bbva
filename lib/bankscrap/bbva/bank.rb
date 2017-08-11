@@ -106,16 +106,21 @@ module Bankscrap
 
       private
 
-      # As far as we know there are two types of identifiers BBVA uses
+      # As far as we know there are three types of identifiers BBVA uses
       # 1) A number of 7 characters that gets passed to the API as it is
-      # 2) A DNI number, this needs to transformed before it get passed to the API
+      # 2) A DNI number, this needs to be transformed before it gets passed to the API
       #    Example: "49021740T" will become "0019-049021740T"
+      # 3) A NIE number, this needs to be transformed before it gets passed to the API
+      #    Example: "X1234567T" will become "0019-X1234567T"
       def format_user(user)
         user.upcase!
 
         if user =~ /^[0-9]{8}[A-Z]$/
           # It's a DNI
           "0019-0#{user}"
+        elsif user =~ /^[X-Y]([0-9]{6}|[0-9]{7})[A-Z]$/
+          # It's a NIE
+          "0019-#{user}"
         else
           user
         end
