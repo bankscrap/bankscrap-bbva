@@ -21,7 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-For usage instructions please read [Bankscrap readme](https://github.com/bankscrap/bankscrap/blob/refactor/README.md#usage).
+For usage instructions please read [Bankscrap readme](https://github.com/bankscrap/bankscrap#usage).
 
 
 ## Contributing
