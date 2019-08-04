@@ -3,6 +3,8 @@
 Bankscrap adapter for the API behind BBVA's [mobile app](https://play.google.com/store/apps/details?id=com.bbva.bbvacontigo&hl=en).
 This adapter is only valid for personal accounts (the ones that work with that mobile APP), not for company accounts.
 
+Contact: open an issue or email us at bankscrap@protonmail.com.
+
 ## Installation
 
 Add this line to your application's Gemfile:
